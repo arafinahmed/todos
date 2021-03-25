@@ -20,27 +20,32 @@ app.get('/', (req, res) => {
 
 
 client.connect(err => {
-  const todosCollection = client.db("Tasks").collection("todos");
-  console.log("connected");
+    const todosCollection = client.db("Tasks").collection("todos");
+    console.log("connected");
 
-  app.post('/createTodo', (req, res) => {
-      const myTask = req.body;
-      todosCollection.insertOne(myTask)
-      .then(result => {
-          if(result.insertedCount>0){
-              res.send({"message": "Data added successfully."});
-          }
-          else{
-            res.send({"message": "Failed to add data."});
-          }
-      })
-      
-  })
+    app.post('/createTodo', (req, res) => {
+        const myTask = req.body;
+        todosCollection.insertOne(myTask)
+            .then(result => {
+                if (result.insertedCount > 0) {
+                    res.send({ "message": "Data added successfully." });
+                }
+                else {
+                    res.send({ "message": "Failed to add data." });
+                }
+            })
+    })
 
-//   client.close();
+    app.get('/loadAllData', (req, res) => {
+        todosCollection.find({}).toArray((err, document) => {
+            res.send(document);
+        })
+    })
+
+    //   client.close();
 });
 
 
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log("Listening to port", port);
 })
